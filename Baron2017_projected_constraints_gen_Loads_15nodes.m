@@ -30,7 +30,7 @@ alpha=0.7;
 generation_cost=[0.2;0.25;0.27;0.29;0.23;0;0;0;0;0;0;0;0;0;0] ;
 %Generation Constraints
 Pmin=[1;1;1;1;1;1;1;1;1;1;1;1;1;1;1];
-Pmax=[5000;5000;5000;5000;5000;1000;1;1;1;1;1;1;1;1;1];
+Pmax=[5000;5000;5000;5000;5000;1000;1500;1;1;1;1;1;1;1;1];
 %Rate of change
 Rate_change=[1;1;1;1;1;1;1;1;1;1;1;1;1;1;1];
 %Load
@@ -83,17 +83,26 @@ Function_prom(1,j)=Function_prom(1,j)/t;
 end
 
 %%%%%%%%%Update variables%%%%%%%%%%%
-Gradient=[1/generation_cost(1)*(1-power(1,k)/Pmax(1));
+Gradient=[(1/generation_cost(1))*(1-power(1,k)/Pmax(1));
           1/generation_cost(2)*(1-power(2,k)/Pmax(2)); 
           1/generation_cost(3)*(1-power(3,k)/Pmax(3));
           1/generation_cost(4)*(1-power(4,k)/Pmax(4));
           1/generation_cost(5)*(1-power(5,k)/Pmax(5));
-          1/Global_cost(6,k)*(.9-(power(6,k))/Pmax(6));
-          0;0;0;0;0;0;0;0;0];
+          1/Global_cost(6,k)*(1-(power(6,k))/Pmax(6));
+          1/Global_cost(7,k)*(-1+(power(7,k))/Pmax(7));
+          0;0;0;0;0;0;0;0];
 
-%Anita(:,k)=1/generation_cost(5)*(1-power(5,k)/Pmax(5));
-%Eder(:,k)=1/Global_cost(6,k)*(.9-(power(6,k)*Global_cost(6,k))/Pmax(6));
-power(:,k+1)=power(:,k)-(Function_prom(:)-alpha*Gradient(:));
+Anita(k)=1/Global_cost(7,k)*(-1+(power(7,k))/Pmax(7));
+Eder(k) =1/Global_cost(6,k)*(1-(power(6,k))/Pmax(6));
+
+
+for i=1:nodes
+if(Choose_gen(i)~=1)
+    power(i,k+1)=power(i,k)+(Function_prom(i)-alpha*Gradient(i));
+else
+    power(i,k+1)=power(i,k)-(Function_prom(i)-alpha*Gradient(i));
+end
+end
 
 %%%%Separación vectores consumidores y productores%%%
 for i=1:length(Choose_gen)
@@ -136,23 +145,23 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Power_demanded(:,k+1)=Power_demanded(:,k);
 subplot(2,2,1)
-%plot(transpose(Anita))
-plot(transpose(power))
+plot(transpose(Anita))
+%plot(transpose(power))
 %plot(transpose(Aux))
 grid on
 subplot(2,2,2)
-plot(transpose(Global_cost))
-%plot(transpose(Eder))
+%plot(transpose(Global_cost))
+plot(transpose(Eder))
 grid on
 subplot(2,2,3)
-p=plot(graph(Edges(:,1),Edges(:,2)));
-highlight(p,minspantree(graph(Edges(:,1),Edges(:,2))))
+%p=plot(graph(Edges(:,1),Edges(:,2)));
+%highlight(p,minspantree(graph(Edges(:,1),Edges(:,2))))
 %plot(transpose(Power_demanded))
-%plot(transpose(Global_cost))
+plot(transpose(Global_cost))
 grid on
 subplot(2,2,4)
-%plot(transpose(power))
-plot(transpose(Power_demanded))
+plot(transpose(power))
+%plot(transpose(Power_demanded))
 grid on
 
 sum(power(:,30000))
