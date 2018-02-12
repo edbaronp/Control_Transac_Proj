@@ -26,10 +26,10 @@ power_aux=zeros(nodes,1);
 iterations=90000;
 alpha=0.5;
 %Generator Charateristics
-generation_cost=[1;2;3;4;3;3;3;1] ;
+generation_cost=[1;2;3;4;3;3;3;3] ;
 %Generation Constraints
 Pmin=[1;1;1;1;1;1;1;1];
-Pmax=[2000;3000;4000;5000;1;1;1;1];
+Pmax=[2000;2500;3000;5000;500;501;501;501];
 %Rate of change
 Rate_change=[0.3;0.3;0.3;0.3;1;1;1;1];
 %Load
@@ -133,16 +133,15 @@ for k=1:iterations
         if(power(q,k+1)<Pmin(q))
             power(q,k+1)=Pmin(q);
         end
-    end
-    
-    for w=1:nodes
-        if(power(w,k+1)>Pmax(w))
-            power(w,k+1)=Pmax(w);
+        if(power(q,k+1)>Pmax(q))
+            power(q,k+1)=Pmax(q);
         end
     end
     
     
-    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%Global Constraint____Only for generators%%
     
     
@@ -154,25 +153,27 @@ for k=1:iterations
     
     %%%%% Local Rate of change constraint%%%%
     for e=1:nodes
-        if(power(e,k+1)-power(e,k)>Rate_change(e))
-            power(e,k+1)=power(e,k)+Rate_change(e);
-        end
-        if(power(e,k+1)-power(e,k)<-Rate_change(e))
-            power(e,k+1)=power(e,k)-Rate_change(e);
+        if (Choose_gen(e)==1)
+            if(power(e,k+1)-power(e,k)>Rate_change(e))
+                power(e,k+1)=power(e,k)+Rate_change(e);
+            end
+            if(power(e,k+1)-power(e,k)<-Rate_change(e))
+                power(e,k+1)=power(e,k)-Rate_change(e);
+            end
         end
     end
     %%%%% Local Generation constraints%%%%
     for q=1:nodes
-        if(power(q,k+1)<Pmin(q))
-            power(q,k+1)=Pmin(q);
+        if (Choose_gen(q)==1)
+            if(power(q,k+1)<Pmin(q))
+                power(q,k+1)=Pmin(q);
+            end
+            if(power(q,k+1)>Pmax(q))
+                power(q,k+1)=Pmax(q);
+            end
         end
     end
     
-    for w=1:nodes
-        if(power(w,k+1)>Pmax(w))
-            power(w,k+1)=Pmax(w);
-        end
-    end
     
     
     %%Global Constraint with generators with maximum capacity%%
@@ -184,38 +185,37 @@ for k=1:iterations
     
     if(~isequal(projection_generation(:),zeros(1,nodes)))
         full_generators(:,k)=DistCons(projection_generation,Adjacency_MST);
-        for j=1:nodes
-            if (~isequal(power(j,k+1),Pmax(j))&& Choose_gen(j)==1)
-                power(j,k+1)= power(j,k+1)-(Power_generated(j,k)-Power_demanded(j,k))./(Number_generators(j,k)-full_generators(j,k));
-            end
-        end
+         for j=1:nodes
+             if (~isequal(power(j,k+1),Pmax(j))&& Choose_gen(j)==1)
+                 power(j,k+1)= power(j,k+1)-(Power_generated(j,k)-Power_demanded(j,k))./(Number_generators(j,k)-full_generators(j,k));
+             end
+         end
     end
     
     
     
     %%%%% Local Rate of change constraint%%%%
     for e=1:nodes
-        if(power(e,k+1)-power(e,k)>Rate_change(e))
-            power(e,k+1)=power(e,k)+Rate_change(e);
-        end
-        if(power(e,k+1)-power(e,k)<-Rate_change(e))
-            power(e,k+1)=power(e,k)-Rate_change(e);
+        if (Choose_gen(e)==1)
+            if(power(e,k+1)-power(e,k)>Rate_change(e))
+                power(e,k+1)=power(e,k)+Rate_change(e);
+            end
+            if(power(e,k+1)-power(e,k)<-Rate_change(e))
+                power(e,k+1)=power(e,k)-Rate_change(e);
+            end
         end
     end
     %%%%% Local Generation constraints%%%%
-    for q=1:nodes
-        if(power(q,k+1)<Pmin(q))
-            power(q,k+1)=Pmin(q);
+    for q=1:nodes        
+        if (Choose_gen(e)==1)
+            if(power(q,k+1)<Pmin(q))
+                power(q,k+1)=Pmin(q);
+            end
+            if(power(q,k+1)>Pmax(q))
+                power(q,k+1)=Pmax(q);
+            end
         end
     end
-    
-    for w=1:nodes
-        if(power(w,k+1)>Pmax(w))
-            power(w,k+1)=Pmax(w);
-        end
-    end
-    
-    %v(:,k)=((ones(1,nodes)*power(:,k+1))*ones(nodes,1)-Power_demanded(:,k)-(ones(1,nodes)*power_aux(:,k+1))*ones(nodes,1))./Power_demanded(:,k)*100;
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Power_demanded(:,k+1)=Power_demanded(:,k);
@@ -234,7 +234,7 @@ subplot(2,2,4)
 plot(transpose(Power_demanded))
 grid on
 
-(sum(power(:,20000))-Power_demanded(1,20000))/Power_demanded(1,20000)*100
-(sum(power(:,40000))-Power_demanded(1,40000))/Power_demanded(1,40000)*100
-(sum(power(:,k+1))-Power_demanded(1,k))/Power_demanded(1,k)*100
+(sum(power(:,20000))-Power_demanded(1,20000))%/Power_demanded(1,20000)*100
+(sum(power(:,40000))-Power_demanded(1,40000))%/Power_demanded(1,40000)*100
+(sum(power(:,k+1))-Power_demanded(1,k))%/Power_demanded(1,k)*100
 a

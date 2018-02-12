@@ -26,10 +26,10 @@ power_aux=zeros(nodes,1);
 iterations=90000;
 alpha=0.5;
 %Generator Charateristics
-generation_cost=[1;2;3;4;3;3;3;1] ;
+generation_cost=[1;2;3;4;3;3;3;3] ;
 %Generation Constraints
 Pmin=[1;1;1;1;1;1;1;1];
-Pmax=[2000;3000;4000;5000;1;1;1;1];
+Pmax=[2000;2500;3000;5000;500;501;501;501];
 %Rate of change
 Rate_change=[0.3;0.3;0.3;0.3;1;1;1;1];
 %Load
@@ -119,7 +119,7 @@ for k=1:iterations
     
     %%%%%Projected Constrains%%%%%
     
-        %%%%% Local Rate of change constraint%%%%
+        %%%%% Local Rate of change constraint___For everyone%%%%
     for e=1:nodes
         if(power(e,k+1)-power(e,k)>Rate_change(e))
             power(e,k+1)=power(e,k)+Rate_change(e);
@@ -133,17 +133,18 @@ for k=1:iterations
         if(power(q,k+1)<Pmin(q))
             power(q,k+1)=Pmin(q);
         end
-    end
-    
-    for w=1:nodes
-        if(power(w,k+1)>Pmax(w))
-            power(w,k+1)=Pmax(w);
+        if(power(q,k+1)>Pmax(q))
+            power(q,k+1)=Pmax(q);
         end
     end
     
     
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%Global Constraint____Only for generators%%
-    if(Choose_gen
+    
+    
     for c=1:nodes
         if (Choose_gen(c)==1)
             power(c,k+1)= power(c,k+1)-(Power_generated(c,k)-Power_demanded(c,k))./Number_generators(c,k);
@@ -152,25 +153,27 @@ for k=1:iterations
     
     %%%%% Local Rate of change constraint%%%%
     for e=1:nodes
-        if(power(e,k+1)-power(e,k)>Rate_change(e))
-            power(e,k+1)=power(e,k)+Rate_change(e);
-        end
-        if(power(e,k+1)-power(e,k)<-Rate_change(e))
-            power(e,k+1)=power(e,k)-Rate_change(e);
+        if (Choose_gen(e)==1)
+            if(power(e,k+1)-power(e,k)>Rate_change(e))
+                power(e,k+1)=power(e,k)+Rate_change(e);
+            end
+            if(power(e,k+1)-power(e,k)<-Rate_change(e))
+                power(e,k+1)=power(e,k)-Rate_change(e);
+            end
         end
     end
     %%%%% Local Generation constraints%%%%
     for q=1:nodes
-        if(power(q,k+1)<Pmin(q))
-            power(q,k+1)=Pmin(q);
+        if (Choose_gen(q)==1)
+            if(power(q,k+1)<Pmin(q))
+                power(q,k+1)=Pmin(q);
+            end
+            if(power(q,k+1)>Pmax(q))
+                power(q,k+1)=Pmax(q);
+            end
         end
     end
     
-    for w=1:nodes
-        if(power(w,k+1)>Pmax(w))
-            power(w,k+1)=Pmax(w);
-        end
-    end
     
     
     %%Global Constraint with generators with maximum capacity%%
@@ -193,11 +196,13 @@ for k=1:iterations
     
     %%%%% Local Rate of change constraint%%%%
     for e=1:nodes
-        if(power(e,k+1)-power(e,k)>Rate_change(e))
-            power(e,k+1)=power(e,k)+Rate_change(e);
-        end
-        if(power(e,k+1)-power(e,k)<-Rate_change(e))
-            power(e,k+1)=power(e,k)-Rate_change(e);
+        if (Choose_gen(e)==1)
+            if(power(e,k+1)-power(e,k)>Rate_change(e))
+                power(e,k+1)=power(e,k)+Rate_change(e);
+            end
+            if(power(e,k+1)-power(e,k)<-Rate_change(e))
+                power(e,k+1)=power(e,k)-Rate_change(e);
+            end
         end
     end
     %%%%% Local Generation constraints%%%%
@@ -205,11 +210,8 @@ for k=1:iterations
         if(power(q,k+1)<Pmin(q))
             power(q,k+1)=Pmin(q);
         end
-    end
-    
-    for w=1:nodes
-        if(power(w,k+1)>Pmax(w))
-            power(w,k+1)=Pmax(w);
+        if(power(q,k+1)>Pmax(q))
+            power(q,k+1)=Pmax(q);
         end
     end
     
