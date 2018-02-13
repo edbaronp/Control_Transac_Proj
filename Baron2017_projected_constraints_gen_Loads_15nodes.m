@@ -6,11 +6,16 @@ clear all
 
 %%%% Inputs %%%%
 %Graph Declaration%
+<<<<<<< HEAD
 nodes=15;
 Edges=[5 15;5 3;5 4;2 3; 2 6; 3 1; 4 1; 4 15;
     1 6;1 9;1 8;6 7;6 13;7 13;8 11;14 11;
     8 12;9 11;10 3;10 2;11 12;12 13;2 7;
     14 15; 14 4; 9 4; 8 9;10 5;14 9;3 6; 13 8];
+=======
+nodes=4;
+Edges=[ 1 2; 1 3; 2 4; 3 4];
+>>>>>>> e7c36ea966186ecde7af318c31253c2e12573c32
 power=ones(nodes,1);
 %%%%% System global values%%%%%%%
 Function_prom=zeros(1,nodes);
@@ -20,25 +25,72 @@ Power_demanded=zeros(nodes,1);
 Power_generated=zeros(nodes,1);
 %%%%% Número de nodos
 Number_generators=zeros(nodes,1);%Numero de generadores
+<<<<<<< HEAD
 Choose_gen=[1;1;1;1;1;0;0;0;0;1;0;0;1;0;0];%1=gen o 0=consumidores
+=======
+<<<<<<< HEAD
+Choose_gen=[1;1;1;1];%1=gen o 0=consumidores
+=======
+Choose_gen=[1;1;1;1;1;0;0;0;0;1;0;0;0;0;0];%1=gen o 0=consumidores
+>>>>>>> b0397759f33ec12db3324f7d8079b634377a5514
+>>>>>>> e7c36ea966186ecde7af318c31253c2e12573c32
 %%%%%Separación vectores
 xg=zeros(nodes,1);
 power_aux=zeros(nodes,1);
 %%%% Parametros simulación
 iterations=90000;
+<<<<<<< HEAD
 alpha=0.99;
+=======
+<<<<<<< HEAD
+alpha=0.5;
+%Generator Charateristics
+generation_cost=[1;2;3;4] ;
+%Generation Constraints
+Pmin=[1;1;1;1];
+Pmax=[2000;3000;4000;5000];
+=======
+alpha=0.8;
+>>>>>>> e7c36ea966186ecde7af318c31253c2e12573c32
 %Generator Charateristics
 generation_cost=[0.2;0.3;0.4;0.5;0.6;0;0;0;0;0.7;0;0;0.8;0;0] ;
 %Generation Constraints
 Pmin=[1;1;1;1;1;1;1;1;1;1;1;1;1;1;1];
+<<<<<<< HEAD
 Pmax=[3000;4000;5000;5000;6000;1;1;1;1;5000;1;1;3000;1;5];
 %Rate of change
 Rate_change=[.5;1;.5;1;.5;1;1;1;1;1;1;1;1;1;1];
 %Load
 Load_1=[0;0;0;0;0;0;0;0;0;0;0;0;0;0;8000];
 Load=Load_1;
+=======
+Pmax=[2000;3000;4000;5000;6000;500;500;500;500;3000;500;1;1;1;1];
+>>>>>>> b0397759f33ec12db3324f7d8079b634377a5514
+%Rate of change
+Rate_change=[0.3;0.3;0.3;0.3];
+%Load
+<<<<<<< HEAD
+Load_1=[0;0;0;8000];
+=======
+Load_1=[0;0;0;0;0;1000;1000;1000;1000;1000;1000;1000;1000;1000;1000];
+>>>>>>> b0397759f33ec12db3324f7d8079b634377a5514
+Load=Load_1;
+asd=0;
+%Projection auxiliar variable
+full_generators=zeros(nodes,1);
+>>>>>>> e7c36ea966186ecde7af318c31253c2e12573c32
 
 for k=1:iterations
+<<<<<<< HEAD
+    
+ projection_generation=zeros(nodes,1);
+ %%%%%%%%%%%%Demanded Power%%%%%    
+     if (k==30000)
+         Load=[0;0;0;14000];
+     end    
+    if (k==60000)
+       Load=[0;0;0;10000];
+=======
 %Function_prom=ones(1,nodes);
 
  %%%%%%%%%%%%Demanded Power%%%%%    
@@ -46,7 +98,12 @@ for k=1:iterations
          Load=[0;0;0;0;0;0;0;0;0;0;0;0;0;0;16000];
      end    
     if (k==60000)
+<<<<<<< HEAD
          Load=[0;0;0;0;0;0;0;0;0;0;0;0;0;0;25000];
+=======
+         Load=[0;0;0;0;0;1300;1300;1300;1300;1300;1300;1300;1300;1300;1300];
+>>>>>>> b0397759f33ec12db3324f7d8079b634377a5514
+>>>>>>> e7c36ea966186ecde7af318c31253c2e12573c32
      end 
 %%%%%%%%%%%% Spanning Tree %%%%%%%%%%
 if(k==1)
@@ -104,6 +161,9 @@ end
 Gradient=[(1/generation_cost(1))*(1-power(1,k)/Pmax(1));
           1/generation_cost(2)*(1-power(2,k)/Pmax(2)); 
           1/generation_cost(3)*(1-power(3,k)/Pmax(3));
+<<<<<<< HEAD
+          1/generation_cost(4)*(1-power(4,k)/Pmax(4))];
+=======
           1/generation_cost(4)*(1-power(4,k)/Pmax(4));
           1/generation_cost(5)*(1-power(5,k)/Pmax(5));
           0;
@@ -111,6 +171,7 @@ Gradient=[(1/generation_cost(1))*(1-power(1,k)/Pmax(1));
           0;
           0;
           1/generation_cost(10)*(1-(power(10,k))/Pmax(10));
+<<<<<<< HEAD
           0;
           0;
           1/generation_cost(13)*(1-(power(13,k))/Pmax(13));
@@ -119,6 +180,26 @@ Gradient=[(1/generation_cost(1))*(1-power(1,k)/Pmax(1));
 
 for i=1:nodes
     power(i,k+1)=-power(i,k)+(Function_prom(i)-alpha*Gradient(i));
+=======
+          1/Global_cost(11,k)*(1-(power(11,k))/Pmax(11));
+          1/Global_cost(12,k)*(1-(power(12,k))/Pmax(12));
+          1/Global_cost(13,k)*(1-(power(13,k))/Pmax(13));
+          1/Global_cost(14,k)*(1-(power(14,k))/Pmax(14));
+          1/Global_cost(15,k)*(1-(power(15,k))/Pmax(15))];
+>>>>>>> b0397759f33ec12db3324f7d8079b634377a5514
+
+
+for i=1:nodes
+if(Choose_gen(i)~=1)
+<<<<<<< HEAD
+    power(i,k+1)=-power(i,k)+(Function_prom(i)-alpha*Gradient(i));
+=======
+    power(i,k+1)=power(i,k)-(Function_prom(i)-alpha*Gradient(i));
+>>>>>>> b0397759f33ec12db3324f7d8079b634377a5514
+else
+    power(i,k+1)=-power(i,k)+(Function_prom(i)-alpha*Gradient(i));
+end
+>>>>>>> e7c36ea966186ecde7af318c31253c2e12573c32
 end
 
 %%%%Separación vectores consumidores y productores%%%
@@ -131,8 +212,49 @@ end
 end
 
 %%%%%Projected Constrains%%%%%
-%%%%%Virtual Agent Global Constraint%%%%%%%%
+%%Global Constraint%%
 power(:,k+1)= power(:,k+1)-(Power_generated(:,k)-Power_demanded(:,k))./Number_generators(:,k);
+
+%%%%% Local Rate of change constraint%%%%
+for e=1:nodes
+  if(power(e,k+1)-power(e,k)>Rate_change(e))
+       power(e,k+1)=power(e,k)+Rate_change(e);
+  end
+  if(power(e,k+1)-power(e,k)<-Rate_change(e))
+       power(e,k+1)=power(e,k)-Rate_change(e);
+  end
+end
+%%%%% Local Generation constraints%%%%
+for q=1:nodes
+  if(power(q,k+1)<Pmin(q))
+       power(q,k+1)=Pmin(q);
+  end
+end
+
+for w=1:nodes
+  if(power(w,k+1)>Pmax(w))
+       power(w,k+1)=Pmax(w);
+  end
+end
+
+Anita(1,k)= power(2,k+1);
+
+%%Global Constraint with generators with maximum capacity%%
+for c=1:nodes
+    if (isequal(power(c,k+1),Pmax(c)))
+        projection_generation(c)=projection_generation(c)+1;
+    end
+end
+
+if(~isequal(projection_generation(:),zeros(1,nodes)))
+    full_generators(:,k)=DistCons(projection_generation,Adjacency_MST);
+        for j=1:nodes
+            if (power(j,k+1)~=Pmax(j))
+                power(j,k+1)= power(j,k+1)-(Power_generated(j,k)-Power_demanded(j,k))./(Number_generators(j,k)-full_generators(j,k));
+            end
+        end
+end
+
 
 
 %%%%% Local Rate of change constraint%%%%
@@ -157,12 +279,23 @@ for w=1:nodes
   end
 end
 
+<<<<<<< HEAD
+=======
+%v(:,k)=((ones(1,nodes)*power(:,k+1))*ones(nodes,1)-Power_demanded(:,k)-(ones(1,nodes)*power_aux(:,k+1))*ones(nodes,1))./Power_demanded(:,k)*100;
+>>>>>>> e7c36ea966186ecde7af318c31253c2e12573c32
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Power_demanded(:,k+1)=Power_demanded(:,k);
 
 subplot(2,2,1)
 plot(transpose(power))
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+%plot(transpose(Aux))
+>>>>>>> b0397759f33ec12db3324f7d8079b634377a5514
+>>>>>>> e7c36ea966186ecde7af318c31253c2e12573c32
 grid on
 subplot(2,2,2)
 plot(transpose(Global_cost))
@@ -170,6 +303,7 @@ grid on
 subplot(2,2,3)
 p=plot(graph(Edges(:,1),Edges(:,2)));
 highlight(p,minspantree(graph(Edges(:,1),Edges(:,2))))
+<<<<<<< HEAD
 grid on
 subplot(2,2,4)
 plot(transpose(power))
@@ -178,3 +312,21 @@ grid on
 sum(power(:,30000))-8000
 sum(power(:,60000))-16000
 sum(power(:,k+1))-25000
+=======
+<<<<<<< HEAD
+grid on
+subplot(2,2,4)
+=======
+%plot(transpose(Power_demanded))
+%plot(transpose(Global_cost))
+grid on
+subplot(2,2,4)
+%plot(transpose(power))
+>>>>>>> b0397759f33ec12db3324f7d8079b634377a5514
+plot(transpose(Power_demanded))
+grid on
+
+(sum(power(:,20000))-Power_demanded(1,20000))/Power_demanded(1,20000)*100
+(sum(power(:,40000))-Power_demanded(1,40000))/Power_demanded(1,40000)*100
+(sum(power(:,k+1))-Power_demanded(1,k))/Power_demanded(1,k)*100
+>>>>>>> e7c36ea966186ecde7af318c31253c2e12573c32
