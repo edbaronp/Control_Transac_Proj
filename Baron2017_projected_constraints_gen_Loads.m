@@ -25,15 +25,21 @@ iter=90000;
 alpha=0.4;
 %Generator Charateristics
 <<<<<<< HEAD
+<<<<<<< HEAD
 c=[0.1;0.15;0.2;0.25;0.3;5] ;
 %Generation Constraints
 Pmin=[1;1;1;1;1;1];
 Pmax=[4000;4000;5000;6000;4000;10];
 =======
+=======
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
 generation_cost=[1;2;3;4;3;3;3;1] ;
 %Generation Constraints
 Pmin=[1;1;1;1;1;1;1;1];
 Pmax=[2000;3000;4000;5000;1;1;1;1];
+<<<<<<< HEAD
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
+=======
 >>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
 %Rate of change
 TC=[1;1;1;1;1;1];
@@ -230,6 +236,7 @@ for i=1:nodes
     end
     
     %v(:,k)=((ones(1,nodes)*power(:,k+1))*ones(nodes,1)-Power_demanded(:,k)-(ones(1,nodes)*power_aux(:,k+1))*ones(nodes,1))./Power_demanded(:,k)*100;
+<<<<<<< HEAD
 end
 Fprom(1,j)=Fprom(1,j)/t;
 end
@@ -280,6 +287,8 @@ for w=1:nodes
   end
 end
 
+=======
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Pd(:,k+1)=Pd(:,k);
@@ -297,6 +306,7 @@ subplot(2,2,4)
 plot(transpose(XT))
 grid on
 
+<<<<<<< HEAD
 %sum(x(:,30000))
 sum(x(:,60000))
 sum(x(:,k+1))
@@ -305,3 +315,9 @@ sum(x(:,k+1))
 (sum(power(:,40000))-Power_demanded(1,40000))/Power_demanded(1,40000)*100
 (sum(power(:,k+1))-Power_demanded(1,k))/Power_demanded(1,k)*100
 a
+=======
+(sum(power(:,20000))-Power_demanded(1,20000))/Power_demanded(1,20000)*100
+(sum(power(:,40000))-Power_demanded(1,40000))/Power_demanded(1,40000)*100
+(sum(power(:,k+1))-Power_demanded(1,k))/Power_demanded(1,k)*100
+a
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.

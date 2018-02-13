@@ -20,7 +20,11 @@ Power_generated=zeros(nodes,1);
 %%%%% N�mero de nodos
 Number_generators=zeros(nodes,1);%Numero de generadores
 <<<<<<< HEAD
+<<<<<<< HEAD
 Choose_gen=[1;1;1;1;1;0;0;0;0;1;0;0;1;0;0];%1=gen o 0=consumidores
+=======
+Choose_gen=[1;1;1;1];%1=gen o 0=consumidores
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
 =======
 Choose_gen=[1;1;1;1];%1=gen o 0=consumidores
 >>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
@@ -30,6 +34,7 @@ power_aux=zeros(nodes,1);
 %%%% Parametros simulaci�n
 iterations=90000;
 <<<<<<< HEAD
+<<<<<<< HEAD
 alpha=0.99;
 %Generator Charateristics
 generation_cost=[0.2;0.3;0.4;0.5;0.6;0;0;0;0;0.7;0;0;0.8;0;0] ;
@@ -37,18 +42,27 @@ generation_cost=[0.2;0.3;0.4;0.5;0.6;0;0;0;0;0.7;0;0;0.8;0;0] ;
 Pmin=[1;1;1;1;1;1;1;1;1;1;1;1;1;1;1];
 Pmax=[3000;4000;5000;5000;6000;1;1;1;1;5000;1;1;3000;1;5];
 =======
+=======
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
 alpha=0.5;
 %Generator Charateristics
 generation_cost=[1;2;3;4] ;
 %Generation Constraints
 Pmin=[1;1;1;1];
 Pmax=[2000;3000;4000;5000];
+<<<<<<< HEAD
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
+=======
 >>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
 %Rate of change
 Rate_change=[.5;1;.5;1;.5;1;1;1;1;1;1;1;1;1;1];
 %Load
 <<<<<<< HEAD
+<<<<<<< HEAD
 Load_1=[0;0;0;0;0;0;0;0;0;0;0;0;0;0;8000];
+=======
+Load_1=[0;0;0;8000];
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
 =======
 Load_1=[0;0;0;8000];
 >>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
@@ -56,13 +70,19 @@ Load=Load_1;
 
 for k=1:iterations
 <<<<<<< HEAD
+<<<<<<< HEAD
 %Function_prom=ones(1,nodes);
 
+=======
+    
+ projection_generation=zeros(nodes,1);
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
  %%%%%%%%%%%%Demanded Power%%%%%    
      if (k==30000)
          Load=[0;0;0;0;0;0;0;0;0;0;0;0;0;0;16000];
      end    
     if (k==60000)
+<<<<<<< HEAD
          Load=[0;0;0;0;0;0;0;0;0;0;0;0;0;0;25000];
 =======
     
@@ -72,6 +92,9 @@ for k=1:iterations
          Load=[0;0;0;14000];
      end    
     if (k==60000)
+       Load=[0;0;0;10000];
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
+=======
        Load=[0;0;0;10000];
 >>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
      end 
@@ -132,6 +155,7 @@ Gradient=[(1/generation_cost(1))*(1-power(1,k)/Pmax(1));
           1/generation_cost(2)*(1-power(2,k)/Pmax(2)); 
           1/generation_cost(3)*(1-power(3,k)/Pmax(3));
 <<<<<<< HEAD
+<<<<<<< HEAD
           1/generation_cost(4)*(1-power(4,k)/Pmax(4));
           1/generation_cost(5)*(1-power(5,k)/Pmax(5));
           0;
@@ -148,6 +172,8 @@ Gradient=[(1/generation_cost(1))*(1-power(1,k)/Pmax(1));
 for i=1:nodes
     power(i,k+1)=-power(i,k)+(Function_prom(i)-alpha*Gradient(i));
 =======
+=======
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
           1/generation_cost(4)*(1-power(4,k)/Pmax(4))];
 
 
@@ -212,8 +238,11 @@ highlight(p,minspantree(graph(Edges(:,1),Edges(:,2))))
 grid on
 subplot(2,2,4)
 <<<<<<< HEAD
+<<<<<<< HEAD
 plot(transpose(power))
 =======
+=======
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
 plot(transpose(Power_demanded))
 >>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
 grid on

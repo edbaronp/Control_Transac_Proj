@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 Function_prom_generators=zeros(1,nodes);
 Function_prom_consumers=zeros(1,nodes);
 
@@ -42,6 +43,8 @@ subplot(2,1,2)
 plot(Function_prom_consumers)
 grid on
 =======
+=======
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
 for k=1:90000
 Function_prom_generators=zeros(1,nodes);
 Function_prom_consumers=zeros(1,nodes);
@@ -85,5 +88,9 @@ plot(Function_prom_generators)
 grid on
 subplot(2,1,2)
 plot(Function_prom_consumers)
+<<<<<<< HEAD
+grid on
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
+=======
 grid on
 >>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.
