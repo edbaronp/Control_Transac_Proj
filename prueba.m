@@ -5,19 +5,10 @@ Function_prom_consumers=zeros(1,nodes);
 for k=1:iterations
 for j=1:nodes
 t=0;
-=======
-for k=1:90000
-Function_prom_generators=zeros(1,nodes);
-Function_prom_consumers=zeros(1,nodes);
-
-for j=1:nodes
-t=0;g=0;c=0;
->>>>>>> e7c36ea966186ecde7af318c31253c2e12573c32
 for i=1:nodes
     if(Adjacency_Graph(i,j)==1)
         if(Choose_gen(j)==1)
             if(Choose_gen(i)==1)
-<<<<<<< HEAD
                 Function_prom_generators(k,j)=Function_prom_generators(k,j)+power(i,k);
                 Function_prom_consumers(k,j)=Function_prom_consumers(k,j)+Function_prom_consumers(k,i);
             else    
@@ -51,6 +42,16 @@ subplot(2,1,2)
 plot(Function_prom_consumers)
 grid on
 =======
+for k=1:90000
+Function_prom_generators=zeros(1,nodes);
+Function_prom_consumers=zeros(1,nodes);
+
+for j=1:nodes
+t=0;g=0;c=0;
+for i=1:nodes
+    if(Adjacency_Graph(i,j)==1)
+        if(Choose_gen(j)==1)
+            if(Choose_gen(i)==1)
                 Function_prom_generators(1,j)=Function_prom_generators(1,j)+power(i,k);
                 Function_prom_consumers(1,j)=Function_prom_consumers(1,j)+Function_prom_consumers(1,i);
                 g=g+1;
@@ -85,4 +86,4 @@ grid on
 subplot(2,1,2)
 plot(Function_prom_consumers)
 grid on
->>>>>>> e7c36ea966186ecde7af318c31253c2e12573c32
+>>>>>>> parent of e7c36ea... Separación de proyecciones globales, no encuentro el problema, desarrollar una técnica para encontrarlo es primordial.

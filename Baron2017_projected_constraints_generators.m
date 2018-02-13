@@ -17,15 +17,15 @@ iter=90000;
 alpha=0.8;
 beta=1;
 %Generator Charateristics
-pnom1=2000; pnom2=3000;pnom3=4000;pnom4=5000;
+pnom1=3000; pnom2=3000;pnom3=3000;pnom4=3000;
 c=[0.1;0.15;0.2;0.25] ;
 %Generation Constraints
 Pmin=[1;1;1;1];
 Pmax=[pnom1*beta;pnom2*beta;pnom3*beta;pnom4*beta];
 %Rate of change
-TC=[1;1;1;1];
+TC=[1;0.3;1;0.5];
 %Load
-L=[4000;000;00;00]
+L=[4000;000;00;00];
 Pd=4000;
 U=L;
 Cg=zeros(nodes,1);
@@ -37,7 +37,7 @@ for k=1:iter
          Pd=sum(U);
      end    
     if (k==60000)
-       U=[2000;2000;1000;0]
+       U=[2000;2000;1000;0];
        Pd=sum(U);
     end 
 %%%%%%%%%%%% Spanning Tree %%%%%%%%%%
@@ -68,7 +68,7 @@ for j=1:nodes
 t=0;
 for i=1:nodes
     if(Adj(i,j)==1)
-       Fprom(1,j)=Fprom(1,j)+x(i,k);
+       Fprom(1,j)=Fprom(1,j)+x(i);
        t=t+1;
     end
 end
@@ -81,7 +81,7 @@ der=[1/c(1)*(1-x(1,k)/pnom1);
      1/c(3)*(1-x(3,k)/pnom3);
      1/c(4)*(1-x(4,k)/pnom4)];
 
-x(:,k+1)=-x(:,k)+(Fprom(:)-alpha*der(:));
+x(:,k+1)=x(:,k)-(Fprom(:)-alpha*der(:));
 
 %%%%%Projected Constrains%%%%%
 %%%%%Virtual Agent Global Constraint%%%%%%%%
@@ -113,10 +113,10 @@ v(:,k)=((ones(1,nodes)*x(:,k+1))-Pd)/Pd*100;
 
 end
 
-
+createfigure(transpose(x))
 % subplot(3,1,1)
 % subplot(3,1,2)
- plot(transpose(x))
+% plot(transpose(Cg))
 % grid on
 % subplot(3,1,3)
 % plot(transpose(v))

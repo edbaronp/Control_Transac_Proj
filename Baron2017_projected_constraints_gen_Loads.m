@@ -3,73 +3,86 @@
 
 clc
 clear all
-a=0;
+
 %%%% Inputs %%%%
 %Graph Declaration%
-nodes=8;
-Edges=[ 1 2; 1 3; 2 4; 3 4;
-    5 6; 5 7; 6 8; 7 8;
-    1 5; 2 7; 3 6; 8 4];
-power=ones(nodes,1);
-%%%%% System global values%%%%%%%
-Function_prom=zeros(1,nodes);
-Global_cost=zeros(nodes,1);
-Power_demanded=zeros(nodes,1);
-Power_generated=zeros(nodes,1);
+nodes=6;
+Ed=[1 3;3 4;2 1; 2 6; 1 5; 4 5;5 6; 3 2; 1 4];
+x=ones(nodes,1);
+%%%%% Valores globales del sistema
+Fprom=zeros(1,nodes);
+Cg=zeros(nodes,1);
+Pd=zeros(nodes,1);
+XT=zeros(nodes,1);
 %%%%% Número de nodos
-Number_generators=zeros(nodes,1);%Numero de generadores
-Choose_gen=[1;1;1;1;1;1;1;1];%1=gen o 0=consumidores
+N=zeros(nodes,1);
+Z=[1;1;1;1;1;0];% Cuales nodos serán Generadores, 1=Generador, 0= Consumidor
 %%%%%Separación vectores
 xg=zeros(nodes,1);
-power_aux=zeros(nodes,1);
+xd=zeros(nodes,1);
 %%%% Parametros simulación
-iterations=90000;
-alpha=0.5;
+iter=90000;
+alpha=0.4;
 %Generator Charateristics
-generation_cost=[1;2;3;4;3;3;3;3] ;
+<<<<<<< HEAD
+c=[0.1;0.15;0.2;0.25;0.3;5] ;
+%Generation Constraints
+Pmin=[1;1;1;1;1;1];
+Pmax=[4000;4000;5000;6000;4000;10];
+=======
+generation_cost=[1;2;3;4;3;3;3;1] ;
 %Generation Constraints
 Pmin=[1;1;1;1;1;1;1;1];
-Pmax=[2000;2500;3000;5000;500;501;501;501];
+Pmax=[2000;3000;4000;5000;1;1;1;1];
+>>>>>>> parent of e7c36ea... SeparaciÃ³n de proyecciones globales, no encuentro el problema, desarrollar una tÃ©cnica para encontrarlo es primordial.
 %Rate of change
-Rate_change=[0.3;0.3;0.3;0.3;1;1;1;1];
+TC=[1;1;1;1;1;1];
 %Load
-Load_1=[0;0;0;0;0;0;0;8000];
-Load=Load_1;
+L=[0;0;0;0;0;15000];
+U=L;
 asd=0;
-%Projection
-full_generators=zeros(nodes,1);
-Gradient=zeros(1,nodes);
 
-for k=1:iterations
-    projection_generation=zeros(nodes,1);
-    %%%%%%%%%%%%Demanded Power%%%%%
-    if (k==30000)
-        Load=[0;0;0;0;0;0;0;14000];
-    end
+for k=1:iter
+ %%%%%%%%%%%%Demanded Power%%%%%    
+     if (k==30000)
+         U=[0;0;0;0;0;12000];
+     end    
     if (k==60000)
-        Load=[0;0;0;0;0;0;0;10000];
-    end
-    %%%%%%%%%%%% Spanning Tree %%%%%%%%%%
-    if(asd==0)
-        Adjacency_Graph=Adjacency(Edges);
-        Adjacency_MST=Adjacency(MST(Edges));
-        asd=1;
-    end
-    %%%%%%%%%%% Finite- Time Distributed Averaging %%%%%%%%
+       U=[0;0;0;0;0;18000];
+     end 
+%%%%%%%%%%%% Spanning Tree %%%%%%%%%%
+if(asd==0)
+Adj=Adjacency(Ed);
+mst=Adjacency(MST(Ed));
+asd=1;
+end
+%%%%%%%%%%% Finite- Time Distributed Averaging %%%%%%%%
     %%%%%%%%%%PD%%%%%%%%%%%
-    Power_demanded(:,k)=DistCons(Load,Adjacency_MST);
-    %%%%%%%%%%PG%%%%%%%%%%%
-    Power_generated(:,k)=DistCons(power(:,k),Adjacency_MST);
+    Pd(:,k)=DistCons(U,mst);   
     %%%%%%%%%%Cg%%%%%%%%
     if (mod(k,100)==0 || k==1)
-        Global_cost(:,k)=DistCons(generation_cost(:).*power(:,k),Adjacency_MST)./Power_generated(:,k);
+    Cg(:,k)=DistCons(c(:).*x(:,k),mst)./Pd(:,k);
     else
-        Global_cost(:,k)=Global_cost(:,k-1);
+    Cg(:,k)=Cg(:,k-1);
     end
-    %%%%%%%%%%Nodes%%%%%%%%
-    if (asd==0 || k==1)
-        Number_generators(:,k)=DistCons(Choose_gen,Adjacency_MST);
+    %%%%%%%%%%PG%%%%%%%%%%%
+    XT(:,k)=DistCons(x(:,k),mst);
+    %%%%%%%%%%Nodes Generation%%%%%%%%
+    if (mod(k,10000)==0 || k==1)
+        N(:,k)=DistCons(Z,mst);
     else
+<<<<<<< HEAD
+        N(:,k)=N(:,k-1);
+    end
+%%%%%%%%%%%%%%%%Gradient variable algorithm%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%Consensus%%%%
+for j=1:nodes
+t=0;
+for i=1:nodes
+    if(Adj(i,j)==1)
+       Fprom(1,j)=Fprom(1,j)+x(i);
+       t=t+1;
+=======
         Number_generators(:,k)=Number_generators(:,k-1);
     end
     
@@ -133,15 +146,16 @@ for k=1:iterations
         if(power(q,k+1)<Pmin(q))
             power(q,k+1)=Pmin(q);
         end
-        if(power(q,k+1)>Pmax(q))
-            power(q,k+1)=Pmax(q);
+    end
+    
+    for w=1:nodes
+        if(power(w,k+1)>Pmax(w))
+            power(w,k+1)=Pmax(w);
         end
     end
     
     
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     %%Global Constraint____Only for generators%%
     
     
@@ -153,27 +167,25 @@ for k=1:iterations
     
     %%%%% Local Rate of change constraint%%%%
     for e=1:nodes
-        if (Choose_gen(e)==1)
-            if(power(e,k+1)-power(e,k)>Rate_change(e))
-                power(e,k+1)=power(e,k)+Rate_change(e);
-            end
-            if(power(e,k+1)-power(e,k)<-Rate_change(e))
-                power(e,k+1)=power(e,k)-Rate_change(e);
-            end
+        if(power(e,k+1)-power(e,k)>Rate_change(e))
+            power(e,k+1)=power(e,k)+Rate_change(e);
+        end
+        if(power(e,k+1)-power(e,k)<-Rate_change(e))
+            power(e,k+1)=power(e,k)-Rate_change(e);
         end
     end
     %%%%% Local Generation constraints%%%%
     for q=1:nodes
-        if (Choose_gen(q)==1)
-            if(power(q,k+1)<Pmin(q))
-                power(q,k+1)=Pmin(q);
-            end
-            if(power(q,k+1)>Pmax(q))
-                power(q,k+1)=Pmax(q);
-            end
+        if(power(q,k+1)<Pmin(q))
+            power(q,k+1)=Pmin(q);
         end
     end
     
+    for w=1:nodes
+        if(power(w,k+1)>Pmax(w))
+            power(w,k+1)=Pmax(w);
+        end
+    end
     
     
     %%Global Constraint with generators with maximum capacity%%
@@ -185,56 +197,111 @@ for k=1:iterations
     
     if(~isequal(projection_generation(:),zeros(1,nodes)))
         full_generators(:,k)=DistCons(projection_generation,Adjacency_MST);
-         for j=1:nodes
-             if (~isequal(power(j,k+1),Pmax(j))&& Choose_gen(j)==1)
-                 power(j,k+1)= power(j,k+1)-(Power_generated(j,k)-Power_demanded(j,k))./(Number_generators(j,k)-full_generators(j,k));
-             end
-         end
+        for j=1:nodes
+            if (~isequal(power(j,k+1),Pmax(j))&& Choose_gen(j)==1)
+                power(j,k+1)= power(j,k+1)-(Power_generated(j,k)-Power_demanded(j,k))./(Number_generators(j,k)-full_generators(j,k));
+            end
+        end
     end
     
     
     
     %%%%% Local Rate of change constraint%%%%
     for e=1:nodes
-        if (Choose_gen(e)==1)
-            if(power(e,k+1)-power(e,k)>Rate_change(e))
-                power(e,k+1)=power(e,k)+Rate_change(e);
-            end
-            if(power(e,k+1)-power(e,k)<-Rate_change(e))
-                power(e,k+1)=power(e,k)-Rate_change(e);
-            end
+        if(power(e,k+1)-power(e,k)>Rate_change(e))
+            power(e,k+1)=power(e,k)+Rate_change(e);
+        end
+        if(power(e,k+1)-power(e,k)<-Rate_change(e))
+            power(e,k+1)=power(e,k)-Rate_change(e);
         end
     end
     %%%%% Local Generation constraints%%%%
-    for q=1:nodes        
-        if (Choose_gen(e)==1)
-            if(power(q,k+1)<Pmin(q))
-                power(q,k+1)=Pmin(q);
-            end
-            if(power(q,k+1)>Pmax(q))
-                power(q,k+1)=Pmax(q);
-            end
+    for q=1:nodes
+        if(power(q,k+1)<Pmin(q))
+            power(q,k+1)=Pmin(q);
+        end
+>>>>>>> parent of e7c36ea... SeparaciÃ³n de proyecciones globales, no encuentro el problema, desarrollar una tÃ©cnica para encontrarlo es primordial.
+    end
+    
+    for w=1:nodes
+        if(power(w,k+1)>Pmax(w))
+            power(w,k+1)=Pmax(w);
         end
     end
+    
+    %v(:,k)=((ones(1,nodes)*power(:,k+1))*ones(nodes,1)-Power_demanded(:,k)-(ones(1,nodes)*power_aux(:,k+1))*ones(nodes,1))./Power_demanded(:,k)*100;
+end
+Fprom(1,j)=Fprom(1,j)/t;
+end
+
+%%%%%%%%%Update variables%%%%%%%%%%%
+der=[1/c(1)*(1-x(1,k)/Pmax(1));
+     1/c(2)*(1-x(2,k)/Pmax(2)); 
+     1/c(3)*(1-x(3,k)/Pmax(3));
+     1/c(4)*(1-x(4,k)/Pmax(4));
+     1/c(5)*(1-x(5,k)/Pmax(5));
+     1/Cg(6)*(1-(x(6,k)*Cg(6))/Pmax(6))];
+
+x(:,k+1)=x(:,k)-(Fprom(:)-alpha*der(:));
+
+%%%%Separación vectores consumidores y productores%%%
+for i=1:length(Z)
+if(Z(i)~=1)
+    xd(i,k+1)=x(i,k+1);%consumidores
+    Pd(:,k)=Pd(:,k)+ones(nodes,1)*xd(i,k+1);
+    XT(:,k)=XT(:,k)-ones(nodes,1)*xd(i,k+1);
+end
+end
+
+%%%%%Projected Constrains%%%%%
+%%%%%Virtual Agent Global Constraint%%%%%%%%
+x(:,k+1)= x(:,k+1)-(XT(:,k)-Pd(:,k))./N(:,k);
+
+
+%%%%% Local Rate of change constraint%%%%
+for e=1:nodes
+  if(x(e,k+1)-x(e,k)>TC(e))
+       x(e,k+1)=x(e,k)+TC(e);
+  end
+  if(x(e,k+1)-x(e,k)<-TC(e))
+       x(e,k+1)=x(e,k)-TC(e);
+  end
+end
+%%%%% Local Generation constraints%%%%
+for q=1:nodes
+  if(x(q,k+1)<Pmin(q))
+       x(q,k+1)=Pmin(q);
+  end
+end
+
+for w=1:nodes
+  if(x(w,k+1)>Pmax(w))
+       x(w,k+1)=Pmax(w);
+  end
+end
+
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Power_demanded(:,k+1)=Power_demanded(:,k);
+Pd(:,k+1)=Pd(:,k);
 subplot(2,2,1)
-plot(transpose(power))
+plot(transpose(xd))
 grid on
 subplot(2,2,2)
-plot(transpose(Global_cost))
+plot(transpose(x))
 grid on
 subplot(2,2,3)
-% p=plot(graph(Edges(:,1),Edges(:,2)));
-% highlight(p,minspantree(graph(Edges(:,1),Edges(:,2))))
-plot(transpose(full_generators))
+p=plot(graph(Ed(:,1),Ed(:,2)))
+highlight(p,minspantree(graph(Ed(:,1),Ed(:,2))))
 grid on
 subplot(2,2,4)
-plot(transpose(Power_demanded))
+plot(transpose(XT))
 grid on
 
-(sum(power(:,20000))-Power_demanded(1,20000))%/Power_demanded(1,20000)*100
-(sum(power(:,40000))-Power_demanded(1,40000))%/Power_demanded(1,40000)*100
-(sum(power(:,k+1))-Power_demanded(1,k))%/Power_demanded(1,k)*100
+%sum(x(:,30000))
+sum(x(:,60000))
+sum(x(:,k+1))
+%=======
+(sum(power(:,20000))-Power_demanded(1,20000))/Power_demanded(1,20000)*100
+(sum(power(:,40000))-Power_demanded(1,40000))/Power_demanded(1,40000)*100
+(sum(power(:,k+1))-Power_demanded(1,k))/Power_demanded(1,k)*100
 a
